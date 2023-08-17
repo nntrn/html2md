@@ -137,7 +137,7 @@
       }
     }
 
-    document.addEventListener("touchstart", (event) => {
+    $("header").addEventListener("touchstart", () => {
       $("#clipboard").focus()
     })
 
