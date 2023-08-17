@@ -93,32 +93,12 @@
   turndownService.addRule("link", {
     filter: (node) => node.nodeName === "A",
     replacement: (content, node) => `[${node.textContent.trim()}](${node.href})`
-    // replacement: (content, node) =>  `content.replace(/\n/g, "")`
   })
 
   turndownService.addRule("list", {
     filter: (node) => node.nodeName === "LI",
-    replacement: (content, node) => "* " + content.replace(/(\n)+$/m, "") + "\n"
-  })
-
-  turndownService.addRule("listNewLineAfter", {
-    filter: (node) =>
-      node.nodeName === "LI" &&
-      node.previousElementSibling &&
-      node.previousElementSibling.nodeName === "LI" &&
-      node.previousElementSibling.innerText.length > 90,
-
-    replacement: (content, node) => "\n  \n* " + node.textContent.replace(/(\n)+$/m, "") + "\n"
-  })
-
-  turndownService.addRule("newlineHeader", {
-    filter: (node) => /H[1-6]/.test(node.nodeName),
     replacement: (content, node) =>
-      (node.previousElementSibling ? "\n  \n" : "") +
-      "#".repeat(Number(node.nodeName.replace("H", ""))) +
-      " " +
-      content +
-      "\n\n"
+      "* " + content.replace(/([\n\s\t]+)$/m, "").replace(/(^[\n\s\t]+)/m, "") + "\n"
   })
 
   turndownService.addRule("tableHeaderStart", {
@@ -127,6 +107,12 @@
       node.previousElementSibling &&
       node.previousElementSibling.nodeName === "TH",
     replacement: (content, node) => content.replace(/\n/g, "") + " | "
+  })
+
+  turndownService.addRule("indentedCodeBlock", {
+    filter: (node) =>
+      node.nodeName === "PRE" && node.parentElement.className.indexOf("highlight") < 0,
+    replacement: (content, node) => ["```", content.trim(), "```", ""].join("\n")
   })
 
   document.addEventListener("DOMContentLoaded", function () {
@@ -151,10 +137,13 @@
       }
     }
 
+    document.addEventListener("touchstart", (event) => {
+      $("#clipboard").focus()
+    })
+
     document.addEventListener("keydown", function (event) {
       if (event.ctrlKey || event.metaKey) {
         if (String.fromCharCode(event.which).toLowerCase() === "v") {
-          $("#wrapper").classList.remove("start")
           $("#clipboard").focus()
         }
       }
@@ -162,6 +151,7 @@
 
     $("#clipboard").addEventListener("paste", function () {
       setTimeout(clipboardToMarkdown, 200)
+      $("#wrapper").classList.remove("start")
     })
   })
 })()
