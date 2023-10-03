@@ -19,6 +19,23 @@
     return: "enter"
   }
 
+  function escapeBrackets(s) {
+    return s.replace(/</g, "&lt;").replace(/>/g, "&gt;")
+  }
+  function escapeHtml(s) {
+    var ENTITY_MAP = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;",
+      "/": "&#x2F;"
+    }
+    return ("" + s).replace(/[&<>"'/]/g, function (s) {
+      return ENTITY_MAP[s]
+    })
+  }
+
   const doConversion = (key) => conversionMapping[key.toLowerCase().trim()]
 
   function updateKeybind() {
@@ -35,7 +52,13 @@
     }
   }
 
-  const WHITELIST_ATTR = ["href", "id", "class", "src", "name", "colspan", "type"]
+  const WHITELIST_ATTR = [
+    "href",
+    "src",
+    "name",
+    "colspan",
+    "type"
+  ]
 
   function removeAttributes(el) {
     el.getAttributeNames()
@@ -97,21 +120,21 @@
 
   turndownService.addRule("list", {
     filter: (node) => node.nodeName === "LI",
-    replacement: (content, node) =>
-      "* " + content.replace(/([\n\s\t]+)$/m, "").replace(/(^[\n\s\t]+)/m, "") + "\n"
+    replacement: (content, node) => "* " +
+      content.replace(/([\n\s\t]+)$/m, "").replace(/(^[\n\s\t]+)/m, "") +
+      "\n"
   })
 
   turndownService.addRule("tableHeaderStart", {
-    filter: (node) =>
-      node.nodeName === "TH" &&
+    filter: (node) => node.nodeName === "TH" &&
       node.previousElementSibling &&
       node.previousElementSibling.nodeName === "TH",
     replacement: (content, node) => content.replace(/\n/g, "") + " | "
   })
 
   turndownService.addRule("indentedCodeBlock", {
-    filter: (node) =>
-      node.nodeName === "PRE" && node.parentElement.className.indexOf("highlight") < 0,
+    filter: (node) => node.nodeName === "PRE" &&
+      node.parentElement.className.indexOf("highlight") < 0,
     replacement: (content, node) => ["```", content.trim(), "```", ""].join("\n")
   })
 
@@ -130,10 +153,17 @@
 
         $("#wrapper").hidden = false
         $("#output").style.height = "0px"
-        $("#output").value = turndownService.turndown(clipboard.innerHTML)
+        $("#output").value = turndownService.turndown(clipboard.innerHTML.replace(/&nbsp;/g, " "))
+
+        $("pre#htmlinput").innerHTML = escapeBrackets(clipboard.innerHTML
+          .replace(/&nbsp;/g, " ")
+          .replace(/<(\/)?(div|ul|blockquote)>/gi, '\n<$1$2>\n')
+          .replace(/<(li|p|h1|h2|h3|h4|h5|hr)>/gi, '\n<$1>'))
+          .split("\n").filter(e => e.trim().length > 0).join("\n")
+
         $("#clipboard").innerHTML = ""
-        $("textarea").focus()
-        $("textarea").select()
+        $("textarea#output").focus()
+        $("textarea#output").select()
       }
     }
 
