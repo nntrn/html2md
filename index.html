@@ -8,10 +8,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=Edge">
   <link rel="canonical" href="https://nntrn.github.io/html2md" />
   <link rel="stylesheet" href="style.css" />
-  <script src="turndown.js"></script>
-
   <link rel="shortcut icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22><path d=%22M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm11.5 1a.5.5 0 0 0-.5.5v3.793L9.854 8.146a.5.5 0 1 0-.708.708l2 2a.5.5 0 0 0 .708 0l2-2a.5.5 0 0 0-.708-.708L12 9.293V5.5a.5.5 0 0 0-.5-.5zM3.56 7.01h.056l1.428 3.239h.774l1.42-3.24h.056V11h1.073V5.001h-1.2l-1.71 3.894h-.039l-1.71-3.894H2.5V11h1.06V7.01z%22 fill=%22%232196f3%22/></svg>">
-
 </head>
 <body>
   <div class="container">
@@ -22,98 +19,15 @@
       <p><kbd data-keybind="windows">CTRL</kbd> + <kbd>V</kbd></p>
     </header>
     <main>
-      <div contenteditable="true" id="clipboard" class="section"></div>
-      <div id="wrapper" class="section start">
-        <textarea id="output" class="form-control"></textarea>
+      <div contenteditable="true" id="input"></div>
+      <textarea id="inputhtml" disabled></textarea>
+      <div id="wrapper">
+        <textarea id="output"></textarea>
       </div>
     </main>
   </div>
-  <script>
-    var turndownService = new TurndownService({
-      headingStyle: "atx",
-      codeBlockStyle: "fenced",
-      bulletListMarker: "-",
-      emDelimiter: "*"
-    })
-    var gfm = turndownPluginGfm.gfm
-    var tables = turndownPluginGfm.tables
-    var strikethrough = turndownPluginGfm.strikethrough
-
-    turndownService.use(gfm)
-    turndownService.use(tables)
-    turndownService.use(strikethrough)
-    turndownService.use([gfm, tables, strikethrough])
-
-//     turndownService.addRule("key", {
-//       filter: ["kbd"],
-//       replacement: (content) => "`" + content.toUpperCase() + "`"
-//     })
-//
-//     turndownService.addRule("tableHeaderCell", {
-//       filter: (node) => node.nodeName === "TH" && !node.previousElementSibling,
-//       replacement: (content, node) => "| " + content.replace(/\n/g, "") + " | "
-//     })
-//
-    turndownService.addRule("link", {
-      filter: (node) => node.nodeName === "A",
-      replacement: (content, node) => `[${node.textContent.trim()}](${node.href})`
-    })
-//
-//     turndownService.addRule("list", {
-//       filter: (node) => node.nodeName === "LI",
-//       replacement: (content, node) =>
-//         "* " + content.replace(/([\n\s\t]+)$/m, "").replace(/(^[\n\s\t]+)/m, "") + "\n"
-//     })
-
-    turndownService.addRule("tableHeaderStart", {
-      filter: (node) =>
-        node.nodeName === "TH" &&
-        node.previousElementSibling &&
-        node.previousElementSibling.nodeName === "TH",
-      replacement: (content, node) => content.replace(/\n/g, "") + " | "
-    })
-
-    turndownService.addRule("indentedCodeBlock", {
-      filter: (node) =>
-        node.nodeName === "PRE" && node.parentElement.className.indexOf("highlight") < 0,
-      replacement: (content, node) => ["```", content.trim(), "```", ""].join("\n")
-    })
-
-    function clipboardToMarkdown() {
-      const _clipboard = document.querySelector("#clipboard")
-
-      if (document.querySelector("#clipboard").textContent.trim().length) {
-        Array.from(_clipboard.querySelectorAll("*:empty")).forEach((e) => e.remove())
-
-        const markdown = turndownService.turndown(_clipboard.innerHTML)
-        console.log(_clipboard.innerHTML)
-        console.log(markdown)
-        // document.querySelector("#wrapper").hidden = false
-        document.querySelector("#output").value = markdown
-        document.querySelector("#output").rows = markdown.split("\n").length + 3
-        document.querySelector("#output").focus()
-        document.querySelector("textarea").select()
-      }
-    }
-
-    window.addEventListener("DOMContentLoaded", (event) => {
-      document.addEventListener("keydown", function (event) {
-        if (event.ctrlKey || event.metaKey) {
-          if (String.fromCharCode(event.which).toLowerCase() === "v") {
-            document.querySelector("#clipboard").focus()
-          }
-        }
-      })
-
-      document.getElementById("clipboard").addEventListener("input", function () {
-        console.log("input event fired");
-        clipboardToMarkdown()
-
-        document.querySelector("#clipboard").innerHTML = ""
-      }, false);
-    })
-  </script>
-  <!-- <script src="turndown.js"></script> -->
-  <!-- <script src="script.js"></script> -->
+  <script src="turndown-plugin-gfm.js"></script>
+  <script src="turndown.js"></script>
+  <script src="main.js"></script>
 </body>
 </html>
