@@ -1,26 +1,22 @@
-/*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
-html{line-height:1.15;-webkit-text-size-adjust:100%}
-body{margin:0}
+*{box-sizing:border-box}
+html{line-height:1.15;-webkit-text-size-adjust:100%;font-size:14px}
+body{margin:auto;font-size:inherit;height:100%;width:90%;padding:0 0}
 main{display:block}
 h1{font-size:2em;margin:.67em 0}
 hr{box-sizing:content-box;height:0;overflow:visible}
 pre{font-family:monospace,monospace;font-size:1em}
 a{background-color:transparent}
-abbr[title]{border-bottom:none;text-decoration:underline;text-decoration:underline dotted}
-b,strong{font-weight:bolder}
-code,kbd,samp{font-family:monospace,monospace;font-size:1em}
-small{font-size:80%}
-sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}
-sub{bottom:-.25em}
-sup{top:-.5em}
-img{border-style:none}
-textarea{overflow:auto}
-details{display:block}
-summary{display:list-item}
-template{display:none}
+textarea{scrollbar-width:thin;overflow:auto;border:1px solid #222;background:#fff;min-height:65vh;max-height:70vh;width:100%;font-family:monospace;line-height:1.2;font-size:.8rem;resize:none;padding:.5rem}
+input{max-width:30px;text-align:center;border-radius:4px;border:1px solid #aaa}
+input:focus{background:#eee}
+select{background:#fff;border:1px solid #aaa;border-radius:4px;padding:.25rem .5rem}
 [hidden]{display:none}
-/* custom */
-*{box-sizing:border-box;outline:0}
-textarea{width:100%;font-family:monospace;font-size:.8rem;resize:vertical;max-height:30vh}
-.container{width:90%;margin:auto}
-
+#turndown-options{display:flex;flex-wrap:wrap;gap:.75rem 1.5rem;user-select:none}
+#wrapper{position:absolute;top:0;width:100%;z-index:2}
+.atop{position:absolute;top:0;width:100%}
+.atop.xs{top:.25rem!important}
+.bottom{z-index:-1!important}
+.top{z-index:5!important}
+.form-group{display:flex;align-content:center;align-items:baseline;gap:.25rem;line-height:1}
+.form-check{margin-top:1rem;display:flex;align-items:center}
+.container{position:relative;margin-top:1rem}

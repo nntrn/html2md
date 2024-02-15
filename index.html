@@ -11,23 +11,26 @@
   <link rel="shortcut icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22><path d=%22M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm11.5 1a.5.5 0 0 0-.5.5v3.793L9.854 8.146a.5.5 0 1 0-.708.708l2 2a.5.5 0 0 0 .708 0l2-2a.5.5 0 0 0-.708-.708L12 9.293V5.5a.5.5 0 0 0-.5-.5zM3.56 7.01h.056l1.428 3.239h.774l1.42-3.24h.056V11h1.073V5.001h-1.2l-1.71 3.894h-.039l-1.71-3.894H2.5V11h1.06V7.01z%22 fill=%22%232196f3%22/></svg>">
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>html2md</h1>
-      <a href="https://github.com/nntrn/html2md">View on Github</a>
-      <p>Get markdown from clipboard! Just paste!</p>
-      <p><kbd data-keybind="windows">CTRL</kbd> + <kbd>V</kbd></p>
-    </header>
-    <main>
+  <header>
+    <h1>html2md</h1>
+    <a href="https://github.com/nntrn/html2md">View on Github</a>
+    <p>Get markdown from clipboard! Just paste!</p>
+  </header>
+  <main>
+    <div class="container">
       <div contenteditable="true" id="input"></div>
-      <textarea id="inputhtml" disabled></textarea>
-      <div id="wrapper">
+      <textarea class="atop xs" id="htmlcode" disabled></textarea>
+      <div class="atop xs" id="wrapper">
         <textarea id="output"></textarea>
       </div>
-    </main>
-  </div>
-  <script src="turndown-plugin-gfm.js"></script>
+    </div>
+    <div class="form-check">
+      <input class="" type="checkbox" value="Show HTML" id="showHtml">
+      <label class="form-check-label" for="flexCheckIndeterminate"> Show HTML </label>
+    </div>
+  </main>
   <script src="turndown.js"></script>
+  <script src="turndown-plugin-gfm.js"></script>
   <script src="main.js"></script>
 </body>
 </html>
