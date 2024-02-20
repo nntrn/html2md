@@ -12,7 +12,7 @@ input:focus{background:#eee}
 select{background:#fff;border:1px solid #aaa;border-radius:4px;padding:.25rem .5rem}
 [hidden]{display:none}
 #turndown-options{display:flex;flex-wrap:wrap;gap:.75rem 1.5rem;user-select:none}
-#wrapper{position:absolute;top:0;width:100%;z-index:2}
+.wrapper{position:absolute;top:0;width:100%;z-index:2}
 .atop{position:absolute;top:0;width:100%}
 .atop.xs{top:.25rem!important}
 .bottom{z-index:-1!important}
@@ -20,3 +20,4 @@ select{background:#fff;border:1px solid #aaa;border-radius:4px;padding:.25rem .5
 .form-group{display:flex;align-content:center;align-items:baseline;gap:.25rem;line-height:1}
 .form-check{margin-top:1rem;display:flex;align-items:center}
 .container{position:relative;margin-top:1rem}
+#showhtml:checked ~ .container #htmlwrapper{z-index:10000;background:#f6f8fa;border:1px solid #d8dee4;}

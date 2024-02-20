@@ -17,20 +17,21 @@
     <p>Get markdown from clipboard! Just paste!</p>
   </header>
   <main>
+    <label for="showhtml">Show HTML</label>
+    <input type="checkbox" value="show HTML" id="showhtml">
     <div class="container">
-      <div contenteditable="true" id="input"></div>
-      <textarea class="atop xs" id="htmlcode" disabled></textarea>
-      <div class="atop xs" id="wrapper">
-        <textarea id="output"></textarea>
+      <div contenteditable="true" id="pasteclip"></div>
+      <div class="atop wrapper" id="htmlwrapper">
+        <textarea id="htmlcode" ></textarea>
+      </div>
+      <div class="atop wrapper" id="markwrapper">
+        <textarea id="markcode"></textarea>
       </div>
     </div>
-    <div class="form-check">
-      <input class="" type="checkbox" value="Show HTML" id="showHtml">
-      <label class="form-check-label" for="flexCheckIndeterminate"> Show HTML </label>
-    </div>
   </main>
-  <script src="turndown.js"></script>
   <script src="turndown-plugin-gfm.js"></script>
+  <script src="turndown.js"></script>
+  <script src="rules.js"></script>
   <script src="main.js"></script>
 </body>
 </html>
