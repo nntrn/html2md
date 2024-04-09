@@ -77,9 +77,7 @@ rules.listItem = {
 rules.tableCell = {
   filter: ["th", "td"],
   replacement: function (content, node) {
-    console.log(node.parentElement)
-
-    return cell([content, content.length].join("~"), node)
+    return cell(content, node)
   }
 }
 
@@ -97,7 +95,7 @@ rules.tableRow = {
         if (align) border = alignMap[align] || ":--"
 
         borderCells += cell(
-          border.replace(/-/, () => "-".repeat(node.childNodes[i].textContent.length - 2)),
+          border.replace(/-/, () => "-".repeat(node.childNodes[i].textContent.length)),
           node.childNodes[i]
         )
       }
@@ -112,8 +110,7 @@ rules.table = {
   },
 
   replacement: function (content, node) {
-    console.log("table", node)
-    return content.replace("\n\n", "\n")
+    return content.replace(/[\\n]{2,}/g, "\n")
   }
 }
 

@@ -8,7 +8,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=Edge">
   <link rel="canonical" href="https://nntrn.github.io/html2md" />
   <link rel="stylesheet" href="style.css" />
-  <link rel="shortcut icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22><path d=%22M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm11.5 1a.5.5 0 0 0-.5.5v3.793L9.854 8.146a.5.5 0 1 0-.708.708l2 2a.5.5 0 0 0 .708 0l2-2a.5.5 0 0 0-.708-.708L12 9.293V5.5a.5.5 0 0 0-.5-.5zM3.56 7.01h.056l1.428 3.239h.774l1.42-3.24h.056V11h1.073V5.001h-1.2l-1.71 3.894h-.039l-1.71-3.894H2.5V11h1.06V7.01z%22 fill=%22%232196f3%22/></svg>">
+  <link rel="shortcut icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22><path d=%22M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm11.5 1a.5.5 0 0 0-.5.5v3.793L9.854 8.146a.5.5 0 1 0-.708.708l2 2a.5.5 0 0 0 .708 0l2-2a.5.5 0 0 0-.708-.708L12 9.293V5.5a.5.5 0 0 0-.5-.5zM3.56 7.01h.056l1.428 3.239h.774l1.42-3.24h.056V11h1.073V5.001h-1.2l-1.71 3.894h-.039l-1.71-3.894H2.5V11h1.06V7.01z%22/></svg>">
 </head>
 <body>
   <header>
@@ -17,20 +17,18 @@
     <p>Get markdown from clipboard! Just paste!</p>
   </header>
   <main>
-    <label for="showhtml">Show HTML</label>
-    <input type="checkbox" value="show HTML" id="showhtml">
     <div class="container">
-      <div contenteditable="true" id="pasteclip"></div>
-      <div class="atop wrapper" id="htmlwrapper">
-        <textarea id="htmlcode" ></textarea>
+      <div class="flex col">
+        <div contenteditable="true" id="pasteclip"></div>
+        <textarea id="htmlcode"></textarea>
       </div>
-      <div class="atop wrapper" id="markwrapper">
+      <div class="flex col">
         <textarea id="markcode"></textarea>
       </div>
     </div>
   </main>
-  <script src="turndown-plugin-gfm.js"></script>
   <script src="turndown.js"></script>
+  <script src="turndown-plugin-gfm.js"></script>
   <script src="rules.js"></script>
   <script src="main.js"></script>
 </body>

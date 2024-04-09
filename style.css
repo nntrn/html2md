@@ -1,23 +1,27 @@
-*{box-sizing:border-box}
+*{box-sizing:border-box;scrollbar-width:thin}
 html{line-height:1.15;-webkit-text-size-adjust:100%;font-size:14px}
-body{margin:auto;font-size:inherit;height:100%;width:90%;padding:0 0}
-main{display:block}
-h1{font-size:2em;margin:.67em 0}
+body{margin:auto;font-size:inherit;height:100vh;width:100vw;padding:0 0;justify-content:space-between;display:flex;flex-direction:column}
+main{display:block;position:relative;height:calc(100vh - 25vh);width:100%;align-self:end}
+h1{font-size:2rem;margin:0 0;padding:0 0}
 hr{box-sizing:content-box;height:0;overflow:visible}
-pre{font-family:monospace,monospace;font-size:1em}
+pre{font-family:monospace,monospace;font-size:1rem}
 a{background-color:transparent}
-textarea{scrollbar-width:thin;overflow:auto;border:1px solid #222;background:#fff;min-height:65vh;max-height:70vh;width:100%;font-family:monospace;line-height:1.2;font-size:.8rem;resize:none;padding:.5rem}
-input{max-width:30px;text-align:center;border-radius:4px;border:1px solid #aaa}
-input:focus{background:#eee}
-select{background:#fff;border:1px solid #aaa;border-radius:4px;padding:.25rem .5rem}
-[hidden]{display:none}
-#turndown-options{display:flex;flex-wrap:wrap;gap:.75rem 1.5rem;user-select:none}
-.wrapper{position:absolute;top:0;width:100%;z-index:2}
-.atop{position:absolute;top:0;width:100%}
-.atop.xs{top:.25rem!important}
-.bottom{z-index:-1!important}
-.top{z-index:5!important}
-.form-group{display:flex;align-content:center;align-items:baseline;gap:.25rem;line-height:1}
-.form-check{margin-top:1rem;display:flex;align-items:center}
-.container{position:relative;margin-top:1rem}
-#showhtml:checked ~ .container #htmlwrapper{z-index:10000;background:#f6f8fa;border:1px solid #d8dee4;}
+textarea{scrollbar-width:thin;overflow:auto;border:1px solid #222;background:#fff;height:100%;width:100%;font-family:monospace;line-height:1.1;font-size:.8rem;resize:none;outline:0;z-index:10000}
+#markcode{user-select:all}
+.hidden,[hidden]{display:none!important}
+.flex{display:flex}
+.col{flex-direction:column}
+.container{display:flex;width:100%;position:relative;height:100%}
+.container>*{width:100%;flex:1}
+#pasteclip{position:absolute;top:0;z-index:1000;height:3px;border:2px solid #222;width:100%;background:#222;margin-top:-3px}
+header{padding:1rem;height:25vh}
+@media (max-width:600px){
+body{max-height:100vh}
+.container{flex-direction:column}
+.col{max-height:calc((100vh - 25vh)/ 2)}
+}
+@media screen and (max-height:400px){
+header :not(h1){display:none}
+main{position:absolute;bottom:0}
+.container{display:flex;flex-direction:row}
+}

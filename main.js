@@ -12,6 +12,15 @@ var escapes = [
   [/^(\d+)\. /g, "$1. "]
 ]
 
+const hashcode = (str) =>
+  str.split("").reduce(function (a, b) {
+    a = ((a << 5) - a) + b.charCodeAt(0);
+    return a & a;
+  }, 0);
+
+const isPasteEvent = (event) => (event.ctrlKey || event.metaKey) &&
+  String.fromCharCode(event.which).toLowerCase() === "v"
+
 TurndownService.prototype.escape = function (string) {
   return escapes.reduce(function (accumulator, escape) {
     return accumulator.replace(escape[0], escape[1])
@@ -30,11 +39,14 @@ function getTurndownService(options = {}) {
     bulletSpaceSize: 1,
     ...options
   })
+  // service.use(turndownPluginGfm.tables)
   service.use(turndownPluginGfm.gfm)
   service.remove("noscript")
   service.remove("style")
   service.remove("script")
-  for (var key in rules) service.addRule(key, rules[key]);
+
+  for (var key in rules) service.addRule(key, rules[key])
+
   return service
 }
 
@@ -52,54 +64,57 @@ function cleanContentEditable(dom) {
       e.textContent = ""
     })
   Array.from(dom.querySelectorAll(":empty")).forEach((e) => e.remove())
-  Array.from(dom.querySelectorAll("*:not(code,pre,div>pre)")).forEach((el) => removeAttributes(el))
+  Array.from(dom.querySelectorAll("*")).forEach((el) => removeAttributes(el))
+
   return dom.innerHTML
     .split("\n")
     .filter((f) => f.trim().length)
     .join("\n")
 }
 
-function showHTMLTextarea() {
-  if (document.querySelector("#showhtml").checked) {
+function convertHtml2Markdown(_html = document.querySelector("#htmlcode").value) {
+  document.querySelector("#markcode").value =
+    getTurndownService().turndown(_html)
+}
+
+function clipboardToMarkdown() {
+  const clipboard = document.querySelector("#pasteclip")
+  if (clipboard.textContent.trim().length) {
+    const html = cleanContentEditable(clipboard)
+    document.querySelector("#htmlcode").value = html
+    convertHtml2Markdown(html)
+    document.querySelector("#pasteclip").innerHTML = ""
+    document.querySelector("#markcode").focus()
+  }
+}
+
+function checkElemFocus(query) {
+  if (document.querySelector(query) === document.activeElement) {
     return true
   }
   return false
 }
 
-function convertHtml2Markdown() {
-  const htmlcode = document.querySelector("#htmlcode").value
-  document.querySelector("#markcode").value = getTurndownService().turndown(htmlcode)
-  document.querySelector("#markcode").focus()
-}
-
-function clipboardToMarkdown() {
-  const _clipboard = document.querySelector("#pasteclip")
-  if (_clipboard.textContent.trim().length) {
-    const htmlcode = cleanContentEditable(_clipboard)
-    document.querySelector("#htmlcode").value = htmlcode
-    convertHtml2Markdown()
-  }
-}
-
-window.addEventListener("DOMContentLoaded", (event) => {
-
+window.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("keydown", function (event) {
-    if (!showHTMLTextarea()) {
-      if ((event.ctrlKey || event.metaKey) && String.fromCharCode(event.which).toLowerCase() === "v") {
+    if (isPasteEvent(event)) {
+      if (!checkElemFocus("#htmlcode")) {
         document.querySelector("#pasteclip").focus()
+        setTimeout(clipboardToMarkdown, 0)
+      } else {
+        setTimeout(convertHtml2Markdown, 300)
       }
     }
   }, false)
 
-  document.getElementById("showhtml").addEventListener("click", function (event) {
-    if (!event.target.checked) {
+  document.querySelector("#htmlcode").addEventListener("blur", function () {
+    const hash = "" + hashcode(document.querySelector("#htmlcode").value)
+    if (document.querySelector("#markcode").dataset.hc !== hash) {
+      document.querySelector("#markcode").dataset.hc = hash
       convertHtml2Markdown()
+      console.log(hash)
+    } else {
+      console.log("no action")
     }
-  }, false)
-
-  document.getElementById("pasteclip").addEventListener("input", function () {
-    clipboardToMarkdown()
-    document.querySelector("#pasteclip").innerHTML = ""
-  }, false)
-
+  })
 })
