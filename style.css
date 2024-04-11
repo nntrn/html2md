@@ -9,19 +9,30 @@ a{background-color:transparent}
 textarea{scrollbar-width:thin;overflow:auto;border:1px solid #222;background:#fff;height:100%;width:100%;font-family:monospace;line-height:1.1;font-size:.8rem;resize:none;outline:0;z-index:10000}
 #markcode{user-select:all}
 .hidden,[hidden]{display:none!important}
-.flex{display:flex}
-.col{flex-direction:column}
 .container{display:flex;width:100%;position:relative;height:100%}
-.container>*{width:100%;flex:1}
+.container>*{width:100%}
 #pasteclip{position:absolute;top:0;z-index:1000;height:3px;border:2px solid #222;width:100%;background:#222;margin-top:-3px}
 header{padding:1rem;height:25vh}
+.wrapper{background-color:#fff;color:#444}
+.box{box-sizing:border-box;flex-grow:1;max-width:100vw;width:100%}
+.handler{width:10px;background:#222;padding:0;cursor:ew-resize;flex:0 0 auto}
+.handler::before{content:"";display:block;width:4px;height:100%;background:#222;margin:0 auto}
 @media (max-width:600px){
 body{max-height:100vh}
-.container{flex-direction:column}
-.col{max-height:calc((100vh - 25vh)/ 2)}
+.container{flex-direction:column!important}
+.box{min-width:100vw}
+.handler{min-width:100vw;height:10px}
 }
 @media screen and (max-height:400px){
 header :not(h1){display:none}
 main{position:absolute;bottom:0}
 .container{display:flex;flex-direction:row}
+}
+@media (max-width:600px){
+.wrapper{max-height:calc(75vh - 8px)}
+.handler{cursor:row-resize}
+}
+@media (min-width:600px){
+.wrapper{max-width:100vw;overflow-x:hidden}
+[data-resize] #A{width:calc(var(--x) * 1px);height:100%;min-height:calc(100% - 4px);max-height:unset}
 }
