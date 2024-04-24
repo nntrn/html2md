@@ -44,7 +44,7 @@ rules.tableHeaderCell = {
 
 rules.link = {
   filter: (node) => node.nodeName === "A",
-  replacement: (content, node) => `[${node.textContent.trim()}](${node.href})`
+  replacement: (content, node) => `[${node.textContent.trim() || content.toString()}](${node.href})`
 }
 
 rules.tableHeaderStart = {
@@ -95,7 +95,7 @@ rules.tableRow = {
         if (align) border = alignMap[align] || ":--"
 
         borderCells += cell(
-          border.replace(/-/, () => "-".repeat(Math.max(3, node.childNodes[i].textContent.length - 4))),
+          border.replace(/[-]+/, () => "-".repeat(Math.max(3, node.childNodes[i].textContent.length - 1))),
           node.childNodes[i]
         )
       }
@@ -120,4 +120,3 @@ rules.tableSection = {
     return content
   }
 }
-
