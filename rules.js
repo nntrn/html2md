@@ -95,7 +95,7 @@ rules.tableRow = {
         if (align) border = alignMap[align] || ":--"
 
         borderCells += cell(
-          border.replace(/-/, () => "-".repeat(node.childNodes[i].textContent.length)),
+          border.replace(/-/, () => "-".repeat(Math.max(3, node.childNodes[i].textContent.length - 4))),
           node.childNodes[i]
         )
       }
