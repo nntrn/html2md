@@ -48,7 +48,11 @@ function getTurndownService(options = {}) {
   service.remove("noscript")
   service.remove("style")
   service.remove("script")
-  for (var key in rules) service.addRule(key, rules[key])
+
+  for (var key in rules) {
+    service.addRule(key, rules[key])
+  }
+  // console.log(service)
   return service
 }
 
@@ -61,27 +65,24 @@ function removeAttributes(el) {
 
 const move = (newEl, el) => newEl.appendChild(el)
 
+const singleline = (t) => t.split(/[\n\t]*/).map((c) => c.trim()).join(" ")
+
 function cleanContentEditable(_dom = $("#pasteclip")) {
-  if (typeof _dom === "string") {
-    $("#pasteclip").innerHTML = _dom
+  if (!$('#pasteclip').textContent.trim().length) {
+    $("#pasteclip").innerHTML = $('#htmlcode').value
   }
   const dom = $("#pasteclip")
+
+  $$_(dom, "* ~ *").forEach((e) => {
+    if (e.parentElement && singleline(e.parentElement.textContent) === singleline(e.textContent)) {
+      const ih = e.outerHTML
+      e.parentElement.outerHTML = ih
+    }
+  })
+
   $$_(dom, "*")
     .filter((e) => !e.textContent.trim().length)
     .forEach((e) => (e.textContent = ""))
-
-  $$_(dom, "table")
-    .filter((e) => !e.querySelector("th"))
-    .forEach((table) => {
-      const tr = document.createElement("tr")
-      $$$(table.querySelector("tr").children).forEach((c, i) => {
-        tr.appendChild(Object.assign(document.createElement("th"), { textContent: "Col " + i }))
-      })
-      table.prepend(tr)
-    })
-
-  $$_(dom, "table > tbody > tr").forEach((row) => move(row.closest("table"), row))
-  $$_(dom, ":empty").forEach((e) => e.remove())
   $$_(dom, "*").forEach((el) => removeAttributes(el))
 
   return dom.innerHTML
@@ -112,19 +113,37 @@ function checkElemFocus(query) {
   return false
 }
 
-function pasteEvent() {
-  if (isPasteEvent(event)) {
-    if (!checkElemFocus("#htmlcode")) {
-      $("#pasteclip").innerHTML = ""
-      $("#pasteclip").style.zIndex = 1000
-      $("#pasteclip").focus()
-      setTimeout(clipboardToMarkdown, 0)
-    }
+function focusPasteElement() {
+  $("#pasteclip").innerHTML = ""
+  $("#pasteclip").style.zIndex = 1000
+  $("#pasteclip").focus()
+}
+
+function pasteEvent(event) {
+  if (
+    (isPasteEvent(event) && !checkElemFocus("#htmlcode")) ||
+    (checkElemFocus("#htmlcode") && $("[data-media=mobile]"))
+  ) {
+    focusPasteElement()
+    setTimeout(clipboardToMarkdown, 0)
+  }
+}
+
+function isMobile() {
+  try {
+    document.createEvent("TouchEvent")
+    return true
+  } catch (e) {
+    return false
   }
 }
 
 window.addEventListener("DOMContentLoaded", () => {
+  $("body").dataset.media = "desktop"
+  if (isMobile()) $("body").dataset.media = "mobile"
+
   document.addEventListener("keydown", pasteEvent, false)
+  document.addEventListener("paste", pasteEvent, false)
 
   document.querySelector("#htmlcode").addEventListener("blur", function () {
     const hash = "" + hashcode($("#htmlcode").value)
