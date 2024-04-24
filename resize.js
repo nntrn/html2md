@@ -18,14 +18,14 @@ document.addEventListener("mousemove", function (e) {
     return false
   }
   if (document.body.offsetWidth > 600) {
-    $("#A").style.width = e.pageX + "px"
-    $("#B").style.width = `${getContainerWidth(e.pageX)}px`
-    $("#A").style.height = "100%"
-    $("#B").style.height = "100%"
+    $("#html.box").style.width = e.pageX + "px"
+    $("#markdown.box").style.width = `${getContainerWidth(e.pageX)}px`
+    $("#html.box").style.height = "100%"
+    $("#markdown.box").style.height = "100%"
   } else {
-    $("#A").style.height = e.pageY + "px"
-    $("#B").style.height = `${getContainerHeight(e.pageY)}px`
-    $("#B").style.width = "100%"
+    $("#html.box").style.height = e.pageY + "px"
+    $("#markdown.box").style.height = `${getContainerHeight(e.pageY)}px`
+    $("#markdown.box").style.width = "100%"
   }
 })
 
