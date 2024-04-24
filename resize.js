@@ -1,29 +1,34 @@
-var handler = document.querySelector('.handler');
-var wrapper = handler.closest('.wrapper');
-var boxA = document.querySelector('#A');
-var isHandlerDragging = false;
+const handler = $(".handler")
+const wrapper = handler.closest(".wrapper")
 
-handler.addEventListener('mousedown', function (e) {
+var isHandlerDragging = false
+
+const getContainerWidth = (offset = 0) => Number(getComputedStyle($(".container")).width.replace(/[a-z]/g, "")) - Number(offset)
+const getContainerHeight = (offset = 0) => Number(getComputedStyle($(".container")).height.replace(/[a-z]/g, "")) - Number(offset)
+
+handler.addEventListener("mousedown", function (e) {
   if (e.target === handler) {
-    isHandlerDragging = true;
+    isHandlerDragging = true
     wrapper.dataset.resize = 1
-    wrapper.offsetWidth
   }
-});
+})
 
-document.addEventListener('mousemove', function (e) {
+document.addEventListener("mousemove", function (e) {
   if (!isHandlerDragging) {
-    return false;
+    return false
   }
   if (document.body.offsetWidth > 600) {
-    boxA.style.minWidth = e.pageX + 'px'
+    $("#A").style.width = e.pageX + "px"
+    $("#B").style.width = `${getContainerWidth(e.pageX)}px`
+    $("#A").style.height = "100%"
+    $("#B").style.height = "100%"
   } else {
-    boxA.style.minWidth = 'unset'
-    boxA.style.height = (e.pageY - document.querySelector('header').clientHeight) + 'px'
-    boxA.style.maxHeight = (e.pageY - document.querySelector('header').clientHeight) + 'px'
+    $("#A").style.height = e.pageY + "px"
+    $("#B").style.height = `${getContainerHeight(e.pageY)}px`
+    $("#B").style.width = "100%"
   }
-});
+})
 
-document.addEventListener('mouseup', function (e) {
-  isHandlerDragging = false;
-});
+document.addEventListener("mouseup", function (e) {
+  isHandlerDragging = false
+})
