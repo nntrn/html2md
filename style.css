@@ -1,4 +1,4 @@
-:root{--handler:4px;--padding:1rem;--bg-color:#fcfcfa;--block-color:#ddd;--border-color:#bdbdbd;--primary:#f14e32;--accent:#0388a6;}
+:root{--handler:4px;--padding:1rem;--bg-color:#fcfcfa;--block-color:#ddd;--border-color:#bdbdbd;--primary:#f14e32;--accent:#0388a6}
 *{box-sizing:border-box;scrollbar-width:thin}
 html{line-height:1.15;-webkit-text-size-adjust:100%;font-size:12px;margin:0 0;padding:0 0}
 body{font-size:inherit;height:100vh;width:100vw;padding:0 0;display:flex;overflow-y:hidden;margin:0 0;flex-direction:column;font-family:helvetica neue,helvetica,sans-serif;background:var(--bg-color);overflow-x:hidden;background:var(--bg-color);max-height:100vh;gap:1rem 0}
@@ -7,7 +7,6 @@ h1{font-size:2rem;margin:0 0;padding:0 0;position:sticky;top:0}
 hr{box-sizing:content-box;height:0;overflow:visible}
 pre{font-family:monospace,monospace;font-size:1rem}
 a{color:inherit;text-decoration-thickness:2.5px;text-underline-offset:1px;text-decoration-skip-ink:none}
-
 textarea{outline:0;scrollbar-width:thin;height:100%;width:100%;font-family:monospace;line-height:1.1;font-size:.8rem;resize:none;min-width:100px;z-index:1000;margin:0 0;padding:.5rem;padding-top:0;top:0;border:1px solid var(--block-color);max-width:calc(100vw - (var(--padding)*2));max-height:100%;background:var(--bg-color);border-top:5px solid var(--bg-color)}
 header{background:var(--bg-color);display:flex;justify-content:space-between;align-items:center;padding:.35rem var(--padding);color:var(--border-color);font-size:90%}
 h1{color:var(--block-color)}
@@ -23,7 +22,7 @@ p{padding:0 0;margin:0 0}
 textarea{border:.5rem solid var(--bg-color);border-left:0;border-right:0;padding-top:1.25rem}
 .handler:hover{--block-color:var(--accent)}
 .handler:before{background:var(--block-color)}
-[data-label]:before{content:attr(data-label);position:absolute;top:0;z-index:2000;line-height:1;box-sizing:border-box;display:block;color:var(--border-color);overflow-x:hidden;font-size:.9rem;padding:.25rem .5rem;background:var(--bg-color);width:unset;border-right:0}
+.box:before{content:attr(id);text-transform:uppercase;position:absolute;top:0;z-index:2000;line-height:1;box-sizing:border-box;display:block;color:var(--border-color);overflow-x:hidden;font-size:.9rem;padding:.25rem .5rem;background:var(--bg-color);width:unset;border-right:0}
 main{flex:10}
 @media (max-width:600px){
 body{max-height:100vh;--padding:.5rem;--handler:0}
