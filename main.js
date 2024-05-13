@@ -52,7 +52,7 @@ function getTurndownService(options = {}) {
   for (var key in rules) {
     service.addRule(key, rules[key])
   }
-  // console.log(service)
+
   return service
 }
 
@@ -60,7 +60,7 @@ function removeAttributes(el) {
   const WHITELIST_ATTR = ["href", "class", "id", "src", "name", "colspan", "type"]
   el.getAttributeNames()
     .filter((e) => !WHITELIST_ATTR.includes(e))
-    .forEach((e) => el.removeAttribute(e))
+    .forEach((f) => el.removeAttribute(f))
 }
 
 const move = (newEl, el) => newEl.appendChild(el)
@@ -68,28 +68,19 @@ const move = (newEl, el) => newEl.appendChild(el)
 const singleline = (t) => t.split(/[\n\t]*/).map((c) => c.trim()).join(" ")
 
 function cleanContentEditable(_dom = $("#pasteclip")) {
-  if (!$('#pasteclip').textContent.trim().length) {
-    $("#pasteclip").innerHTML = $('#htmlcode').value
-  }
   const dom = $("#pasteclip")
-
-  $$_(dom, "* ~ *").forEach((e) => {
-    if (e.parentElement && singleline(e.parentElement.textContent) === singleline(e.textContent)) {
-      const ih = e.outerHTML
-      e.parentElement.outerHTML = ih
-    }
-  })
-
+  $$_(dom, "svg").forEach((e) => e.remove())
   $$_(dom, "*")
     .filter((e) => !e.textContent.trim().length)
-    .forEach((e) => (e.textContent = ""))
+    .forEach((e) => e.remove())
   $$_(dom, "*").forEach((el) => removeAttributes(el))
 
-  return dom.innerHTML
+  return dom.outerHTML
     .split("\n")
     .filter((f) => f.trim().length)
     .join("\n")
     .trim()
+    .replace(/><(pre|h1|h2|h3|h4|ul|li|div|table)/gi, '>\n<$1')
 }
 
 function convertHtml2Markdown(_html) {

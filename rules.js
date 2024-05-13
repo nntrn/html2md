@@ -25,6 +25,15 @@ function isHeadingRow(tr) {
   )
 }
 
+function slugify(str) {
+  return str.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, '').replace(/[ ]/g, '-')
+}
+
+function highlightLang(node) {
+  return Array.from(node.classList).slice(-1)[0] || ""
+  // return node.classList.filter(e => e.indexOf("-") < 0) || ""
+}
+
 const rules = {}
 
 rules.key = {
@@ -37,6 +46,11 @@ rules.code = {
   replacement: (content, node) => (node.parentElement.nodeName === "PRE" ? content : `\`${content}\``)
 }
 
+rules.codeblock = {
+  filter: ["pre"],
+  replacement: (content, node) => ['```' + highlightLang(node), content, '```'].join("\n")
+}
+
 rules.tableHeaderCell = {
   filter: (node) => node.nodeName === "TH" && !node.previousElementSibling,
   replacement: (content, node) => "| " + content.replace(/\n/g, "") + " | "
@@ -44,7 +58,7 @@ rules.tableHeaderCell = {
 
 rules.link = {
   filter: (node) => node.nodeName === "A",
-  replacement: (content, node) => `[${node.textContent.trim() || content.toString()}](${node.href})`
+  replacement: (content, node) => `[${node.textContent.trim()}](${node.href || "#" + slugify(content)})`
 }
 
 rules.tableHeaderStart = {
