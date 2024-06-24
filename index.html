@@ -1,51 +1,61 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>html2md | @nntrn</title>
-  <meta charset="utf-8" />
-  <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-  <link rel="canonical" href="https://nntrn.github.io/html2md" />
-  <style>
-  :root {
-    --handler: 4px;
-    --padding: 1rem;
-    --bg-color: #fcfcfa;
-    --text-color: #222;
-    --block-color: #ccc;
-    --border-color: #eee;
-    --primary: #ccc;
-    --accent: orange
-  }
-  </style>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="shortcut icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22><path d=%22M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm11.5 1a.5.5 0 0 0-.5.5v3.793L9.854 8.146a.5.5 0 1 0-.708.708l2 2a.5.5 0 0 0 .708 0l2-2a.5.5 0 0 0-.708-.708L12 9.293V5.5a.5.5 0 0 0-.5-.5zM3.56 7.01h.056l1.428 3.239h.774l1.42-3.24h.056V11h1.073V5.001h-1.2l-1.71 3.894h-.039l-1.71-3.894H2.5V11h1.06V7.01z%22/></svg>">
-</head>
-<body>
-  <header>
-    <h1><a href="https://github.com/nntrn/html2md">html2md</a></h1>
-    <p>Get markdown from clipboard! Just paste!</p>
-  </header>
-  <main>
+  <head>
+    <title>html2md | @nntrn</title>
+    <meta charset="utf-8" />
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <link rel="canonical" href="https://nntrn.github.io/html2md" />
+    <style>
+      :root {
+        --handler: 4px;
+        --padding: 1rem;
+        --bg-textarea: #fff;
+        --bg-color: #eee;
+        --text-color: #000;
+        --block-color: #ccc;
+        --border-color: #000;
+        --primary: #ccc;
+        --accent: orange;
+      }
+    </style>
+    <link rel="stylesheet" href="style2.css" />
+    <link
+      rel="shortcut icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22><path d=%22M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm11.5 1a.5.5 0 0 0-.5.5v3.793L9.854 8.146a.5.5 0 1 0-.708.708l2 2a.5.5 0 0 0 .708 0l2-2a.5.5 0 0 0-.708-.708L12 9.293V5.5a.5.5 0 0 0-.5-.5zM3.56 7.01h.056l1.428 3.239h.774l1.42-3.24h.056V11h1.073V5.001h-1.2l-1.71 3.894h-.039l-1.71-3.894H2.5V11h1.06V7.01z%22/></svg>" />
+  </head>
+  <body>
+      <header>
+      <h1>html2md</h1>
+      <a href="https://github.com/nntrn/html2md">github.com/nntrn/html2md</a>
+  
+    </header>
     <div class="container wrapper">
       <div id="html" class="flex col box">
         <div contenteditable="true" id="pasteclip"></div>
         <textarea id="htmlcode"></textarea>
+        <div class="box-header">
+          <strong>HTML</strong>
+          <div class="options">options</div>
+        </div>
       </div>
       <div class="handler"></div>
       <div id="markdown" class="flex col box">
         <textarea id="markcode"></textarea>
+        <div class="box-header">
+          <strong>MARKDOWN</strong>
+          <div class="options">options</div>
+        </div>
       </div>
     </div>
-  </main>
-  <footer>
-    <p>&copy; 2024 Annie Tran</p>
-  </footer>
-  <script src="turndown.js"></script>
-  <script src="turndown-plugin-gfm.js"></script>
-  <script src="rules.js"></script>
-  <script src="main.js"></script>
-  <script src="resize.js"></script>
-</body>
+
+    <script src="vendor/turndown.js"></script>
+    <script src="vendor/api.js"></script>
+    <script src="turndown-plugin-gfm.js"></script>
+    <script src="rules.js"></script>
+    <script src="main.js"></script>
+    <script src="resize.js"></script>
+    <!-- <script src="vendor/index.esm.js"></script> -->
+  </body>
 </html>

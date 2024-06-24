@@ -23,7 +23,7 @@ document.addEventListener("mousemove", function (e) {
     $("#html.box").style.height = "100%"
     $("#markdown.box").style.height = "100%"
   } else {
-    $("#html.box").style.height = e.pageY + "px"
+    $("#html.box").style.height = (e.pageY - 50) + "px"
     $("#markdown.box").style.height = `${getContainerHeight(e.pageY)}px`
     $("#markdown.box").style.width = "100%"
   }

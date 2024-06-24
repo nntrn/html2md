@@ -3,57 +3,28 @@ const $$ = (query) => Array.from(document.querySelectorAll(query))
 const $$$ = (collection) => Array.from(collection)
 const $$_ = (element, query) => Array.from(element.querySelectorAll(query))
 
-var escapes = [
-  [/\\/g, "\\"],
-  [/\*/g, "*"],
-  [/^-/g, "-"],
-  [/^\+ /g, "+ "],
-  [/^(=+)/g, "$1"],
-  [/^(#{1,6}) /g, "$1"],
-  [/`/g, "`"],
-  [/^~~~/g, "~~~"],
-  [/^>/g, ">"],
-  [/_/g, "_"],
-  [/^(\d+)\. /g, "$1. "]
-]
-
-const hashcode = (str) =>
-  str.split("").reduce(function (a, b) {
-    a = (a << 5) - a + b.charCodeAt(0)
-    return a & a
-  }, 0)
-
-const isPasteEvent = (event) => (event.ctrlKey || event.metaKey) && String.fromCharCode(event.which).toLowerCase() === "v"
-
-TurndownService.prototype.escape = function (string) {
-  return escapes.reduce(function (accumulator, escape) {
-    return accumulator.replace(escape[0], escape[1])
-  }, string)
+function escapeHtml(s) {
+  var ENTITY_MAP = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;",
+    "/": "&#x2F;"
+  }
+  return ("" + s).replace(/[&<>"'/]/g, function (s) {
+    return ENTITY_MAP[s]
+  })
 }
 
-function getTurndownService(options = {}) {
-  const service = new TurndownService({
-    headingStyle: "atx",
-    hr: "---",
-    bulletListMarker: "*",
-    codeBlockStyle: "fenced",
-    fence: "```",
-    emDelimiter: "*",
-    strongDelimiter: "**",
-    bulletSpaceSize: 1,
-    ...options
-  })
-
-  service.use(turndownPluginGfm.gfm)
-  service.remove("noscript")
-  service.remove("style")
-  service.remove("script")
-
-  for (var key in rules) {
-    service.addRule(key, rules[key])
+function escapeBrackets(s) {
+  var ENTITY_MAP = {
+    "<": "&lt;",
+    ">": "&gt;",
   }
-
-  return service
+  return ("" + s).replace(/[<>]/g, function (s) {
+    return ENTITY_MAP[s]
+  })
 }
 
 function removeAttributes(el) {
@@ -63,28 +34,44 @@ function removeAttributes(el) {
     .forEach((f) => el.removeAttribute(f))
 }
 
+const hashcode = (str) =>
+  str.split("").reduce(function (a, b) {
+    a = (a << 5) - a + b.charCodeAt(0)
+    return a & a
+  }, 0)
+
+const isPasteEvent = (event) => (event.ctrlKey || event.metaKey) && String.fromCharCode(event.which).toLowerCase() === "v"
+
 const move = (newEl, el) => newEl.appendChild(el)
 
-const singleline = (t) => t.split(/[\n\t]*/).map((c) => c.trim()).join(" ")
+const singleline = (t) => t //.split(/[\n\t]*/).map((c) => c.trim()).join(" ")
 
 function cleanContentEditable(_dom = $("#pasteclip")) {
   const dom = $("#pasteclip")
   $$_(dom, "svg").forEach((e) => e.remove())
+
+  Array.from(dom.querySelectorAll('a'))
+    .forEach((e) => { e.textContent = escapeBrackets(e.textContent) })
+
   $$_(dom, "*")
     .filter((e) => !e.textContent.trim().length)
     .forEach((e) => e.remove())
+
   $$_(dom, "*").forEach((el) => removeAttributes(el))
 
-  return dom.outerHTML
+  return dom.innerHTML
     .split("\n")
     .filter((f) => f.trim().length)
     .join("\n")
     .trim()
-    .replace(/><(pre|h1|h2|h3|h4|ul|li|div|table)/gi, '>\n<$1')
+  // .replace(/><(pre|h1|h2|h3|h4|ul|li|table|div)/gi, ">\n<$1")
+  // .replace(/><\/(ul|table|tr|ol|footer|section|main)>/gi, ">\n</$1>")
+  // .replace(/<\/(h2|h1|h3|h4|footer|main|ul|ol)></gi, "</$1>\n<")
 }
 
 function convertHtml2Markdown(_html) {
   $("#markcode").value = getTurndownService().turndown(_html)
+  // .replace(/[\u0300-\u036f]/g, "")
   $("#pasteclip").style.zIndex = -1
 }
 
@@ -111,10 +98,7 @@ function focusPasteElement() {
 }
 
 function pasteEvent(event) {
-  if (
-    (isPasteEvent(event) && !checkElemFocus("#htmlcode")) ||
-    (checkElemFocus("#htmlcode") && $("[data-media=mobile]"))
-  ) {
+  if ((isPasteEvent(event) && !checkElemFocus("#htmlcode")) || (checkElemFocus("#htmlcode") && $("[data-media=mobile]"))) {
     focusPasteElement()
     setTimeout(clipboardToMarkdown, 0)
   }

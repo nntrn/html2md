@@ -14,6 +14,7 @@ function isFirstTbody(element) {
 }
 
 function isHeadingRow(tr) {
+  if (!tr) { return false }
   var parentNode = tr.parentNode
   return (
     parentNode.nodeName === "THEAD" ||
@@ -40,15 +41,15 @@ rules.key = {
   filter: ["kbd"],
   replacement: (content) => "`" + content.toUpperCase() + "`"
 }
-
-rules.code = {
-  filter: ["code"],
-  replacement: (content, node) => (node.parentElement.nodeName === "PRE" ? content : `\`${content}\``)
-}
+// 
+// rules.code = {
+//   filter: ["code"],
+//   replacement: (content, node) => (node.parentElement.nodeName === "PRE" ? content : `\`${content}\``)
+// }
 
 rules.codeblock = {
   filter: ["pre"],
-  replacement: (content, node) => ['```' + highlightLang(node), content, '```'].join("\n")
+  replacement: (content, node) => ['', '```' + highlightLang(node), content.trim(), '```'].join("\n")
 }
 
 rules.tableHeaderCell = {
@@ -58,7 +59,7 @@ rules.tableHeaderCell = {
 
 rules.link = {
   filter: (node) => node.nodeName === "A",
-  replacement: (content, node) => `[${node.textContent.trim()}](${node.href || "#" + slugify(content)})`
+  replacement: (content, node) => `[${node.textContent}](${node.href || "#" + slugify(content)})`
 }
 
 rules.tableHeaderStart = {
@@ -82,7 +83,7 @@ rules.listItem = {
       .split(/[\r\n]+/)
       .filter((e) => e.trim().length)
       .map((e, i) => (i == 0 ? e : spacePrefix + e))
-      .map((e) => e.replace(/[\s\t]+$/g, ""))
+      // .map((e) => e.replace(/[\s\t]+$/g, ""))
       .join("\n")
     return prefix + content + (node.nextSibling ? "\n\n" : "")
   }
@@ -124,7 +125,7 @@ rules.table = {
   },
 
   replacement: function (content, node) {
-    return content.replace(/[\\n]{2,}/g, "\n")
+    return content.replace(/[\n]{2,}/g, "\n")
   }
 }
 
@@ -133,4 +134,51 @@ rules.tableSection = {
   replacement: function (content) {
     return content
   }
+}
+
+
+var escapes = [
+  [/\\/g, "\\"],
+  [/\*/g, "*"],
+  [/^-/g, "-"],
+  [/^\+ /g, "+ "],
+  [/^(=+)/g, "$1"],
+  [/^(#{1,6}) /g, "$1"],
+  [/`/g, "`"],
+  [/^~~~/g, "~~~"],
+  [/^>/g, ">"],
+  [/_/g, "_"],
+  [/^(\d+)\. /g, "$1. "]
+]
+
+
+TurndownService.prototype.escape = function (string) {
+  return escapes.reduce(function (accumulator, escape) {
+    return accumulator.replace(escape[0], escape[1])
+  }, string)
+}
+
+function getTurndownService(options = {}) {
+  const service = new TurndownService({
+    headingStyle: "atx",
+    hr: "---",
+    bulletListMarker: "*",
+    codeBlockStyle: "fenced",
+    fence: "```",
+    emDelimiter: "*",
+    strongDelimiter: "**",
+    bulletSpaceSize: 1,
+    ...options
+  })
+
+  service.use(turndownPluginGfm.gfm)
+  service.remove("noscript")
+  service.remove("style")
+  service.remove("script")
+
+  for (var key in rules) {
+    service.addRule(key, rules[key])
+  }
+
+  return service
 }
