@@ -3,6 +3,24 @@ const $$ = (query) => Array.from(document.querySelectorAll(query))
 const $$$ = (collection) => Array.from(collection)
 const $$_ = (element, query) => Array.from(element.querySelectorAll(query))
 
+function getTurndownService(options = {}) {
+  const service = new TurndownService({
+    headingStyle: "atx",
+    hr: "---",
+    bulletListMarker: "*",
+    codeBlockStyle: "fenced",
+    fence: "```",
+    emDelimiter: "*",
+    strongDelimiter: "**",
+    bulletSpaceSize: 1,
+    ...options
+  })
+
+  service.use(turndownPluginGfm.gfm)
+
+  return service
+}
+
 function escapeHtml(s) {
   var ENTITY_MAP = {
     "&": "&amp;",
@@ -20,7 +38,7 @@ function escapeHtml(s) {
 function escapeBrackets(s) {
   var ENTITY_MAP = {
     "<": "&lt;",
-    ">": "&gt;",
+    ">": "&gt;"
   }
   return ("" + s).replace(/[<>]/g, function (s) {
     return ENTITY_MAP[s]
@@ -44,18 +62,13 @@ const isPasteEvent = (event) => (event.ctrlKey || event.metaKey) && String.fromC
 
 const move = (newEl, el) => newEl.appendChild(el)
 
-const singleline = (t) => t //.split(/[\n\t]*/).map((c) => c.trim()).join(" ")
-
 function cleanContentEditable(_dom = $("#pasteclip")) {
   const dom = $("#pasteclip")
   $$_(dom, "svg").forEach((e) => e.remove())
 
-  Array.from(dom.querySelectorAll('a'))
-    .forEach((e) => { e.textContent = escapeBrackets(e.textContent) })
-
-  $$_(dom, "*")
-    .filter((e) => !e.textContent.trim().length)
-    .forEach((e) => e.remove())
+  Array.from(dom.querySelectorAll("a")).forEach((e) => {
+    e.textContent = escapeBrackets(e.textContent.trim())
+  })
 
   $$_(dom, "*").forEach((el) => removeAttributes(el))
 
@@ -63,14 +76,18 @@ function cleanContentEditable(_dom = $("#pasteclip")) {
     .split("\n")
     .filter((f) => f.trim().length)
     .join("\n")
-    .trim()
-  // .replace(/><(pre|h1|h2|h3|h4|ul|li|table|div)/gi, ">\n<$1")
-  // .replace(/><\/(ul|table|tr|ol|footer|section|main)>/gi, ">\n</$1>")
-  // .replace(/<\/(h2|h1|h3|h4|footer|main|ul|ol)></gi, "</$1>\n<")
+    .replace(/><(blockquote|pre|h1|h2|h3|h4|ul|li|table)/gi, ">\n<$1")
+    .replace(/><\/(ul|table|tr|ol|footer|section|main)>/gi, ">\n</$1>")
+}
+
+function getFormOptions() {
+  return Array.from($("form"))
+    .map((e) => ({ [e.id]: e.value }))
+    .reduce((a, b) => Object.assign(a, b), {})
 }
 
 function convertHtml2Markdown(_html) {
-  $("#markcode").value = getTurndownService().turndown(_html)
+  $("#markcode").value = getTurndownService(getFormOptions()).turndown(_html)
   // .replace(/[\u0300-\u036f]/g, "")
   $("#pasteclip").style.zIndex = -1
 }
@@ -113,6 +130,54 @@ function isMobile() {
   }
 }
 
+function fallbackCopyTextToClipboard(text) {
+  var textArea = document.createElement("textarea")
+  textArea.value = text
+  textArea.style.top = "0"
+  textArea.style.left = "0"
+  textArea.style.position = "fixed"
+  document.body.appendChild(textArea)
+  textArea.focus()
+  textArea.select()
+
+  try {
+    var successful = document.execCommand("copy")
+    var msg = successful ? "successful" : "unsuccessful"
+    console.log("Fallback: Copying text command was " + msg)
+  } catch (err) {
+    console.error("Fallback: Oops, unable to copy", err)
+  }
+
+  document.body.removeChild(textArea)
+}
+
+function copyTextToClipboard(text) {
+  if (!navigator.clipboard) {
+    fallbackCopyTextToClipboard(text)
+    return
+  }
+  navigator.clipboard.writeText(text).then(
+    function () {
+      console.log("Async: Copying to clipboard was successful!")
+    },
+    function (err) {
+      console.error("Async: Could not copy text: ", err)
+    }
+  )
+}
+
+const utils = {}
+utils.whiteSpace = function (el, v) {
+  el.closest(".parent").style.setProperty("--whitespace", v)
+}
+utils.copyToClip = function (el) {
+  copyTextToClipboard(el.closest(".parent").querySelector("textarea").value)
+}
+
+function turndownHtml() {
+  convertHtml2Markdown($("#htmlcode").value)
+}
+
 window.addEventListener("DOMContentLoaded", () => {
   $("body").dataset.media = "desktop"
   if (isMobile()) $("body").dataset.media = "mobile"
@@ -120,11 +185,18 @@ window.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("keydown", pasteEvent, false)
   document.addEventListener("paste", pasteEvent, false)
 
-  document.querySelector("#htmlcode").addEventListener("blur", function () {
+  $("#htmlcode").addEventListener("blur", function () {
     const hash = "" + hashcode($("#htmlcode").value)
     if ($("#markcode").dataset.hc !== hash) {
       $("#markcode").dataset.hc = hash
       convertHtml2Markdown($("#htmlcode").value)
     }
+  })
+
+  $$("[data-function]").forEach((el) => {
+    const eventtype = el.dataset.event || "input"
+    el.addEventListener(eventtype, function () {
+      utils[el.dataset.function](el, el.value || "")
+    })
   })
 })
