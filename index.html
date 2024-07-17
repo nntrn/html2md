@@ -7,149 +7,136 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
   <link rel="canonical" href="https://nntrn.github.io/html2md" />
-  <link rel="icon" type="image/svg+xml" href="https://nntrn.github.io/html2md/favicon.svg">
-  <link rel="icon" type="image/x-icon" href="https://nntrn.github.io/html2md/favicon.ico">
- <meta name="description" content="Bookmarks from Apple Books" />
-  <meta name="author" content="Annie Tran (@nntrn)">
-  <meta name="robots" content="index, follow">
-  <meta name="theme-color" content="#222222"/>
-  <meta name="format-detection" content="telephone=no">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta property="og:site_name" content="html2md">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://nntrn.github.io/html2md/">
-  <meta property="og:title" content="html2md">
-  <meta property="og:description" content="Online html to markdown converter using turndown">
-  <meta name="twitter:site" content="html2md">
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:url" content="https://nntrn.github.io">
-  <meta name="twitter:title" content="html2md">
-  <meta name="twitter:description" content="Online html to markdown converter using turndown">
+  <link rel="icon" type="image/svg+xml" href="https://nntrn.github.io/html2md/favicon.svg" />
+  <link rel="icon" type="image/x-icon" href="https://nntrn.github.io/html2md/favicon.ico" />
+  <meta name="description" content="Online html to markdown converter using turndown" />
+  <meta name="author" content="Annie Tran (@nntrn)" />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#222222" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <style>
     :root {
       --handler: 4px;
       --padding: 1rem;
-      --bg-textarea: #fff;
       --bg-color: #eee;
       --text-color: #000;
-      --block-color: #ccc;
       --border-color: #000;
-      --primary: #ccc;
-      --accent: orange;
     }
   </style>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header style="--gap-size:.5rem">
-    <div class="container flex col gap">
+  <header style="--gap-size: 1rem">
+    <div class="container">
       <h1><a href="https://github.com/nntrn/html2md">html2md</a></h1>
-      <form id="options" onchange="turndownHtml()">
-        <div class="form-group">
-          <label for="headingStyle">Heading</label>
+    </div>
+  </header>
+  <nav>
+    <div class="container">
+      <form class="flex-grow wrap" id="options" onchange="turndownHtml()">
+        <label class="form-group flex col" for="headingStyle">
           <select name="headingStyle" id="headingStyle">
             <option value="setext">setext</option>
             <option value="atx" selected>atx</option>
           </select>
-        </div>
-        <div class="form-group">
-          <label for="hr">hr</label>
+        </label>
+        <label class="form-group flex col" for="hr">
           <select name="hr" id="hr">
             <option value="* * *">***</option>
-            <option value="---" selected >---</option>
+            <option value="---" selected>---</option>
             <option value="___">___</option>
           </select>
-        </div>
-        <div class="form-group">
-          <label for="bulletListMarker">Bullet</label>
+        </label>
+        <label class="form-group flex col" for="bulletListMarker">
           <select name="bulletListMarker" id="bulletListMarker">
             <option value="*">*</option>
             <option value="-">-</option>
             <option value="+">+</option>
           </select>
-        </div>
-        <div class="form-group">
-          <label for="codeBlockStyle">Codeblock</label>
+        </label>
+        <label class="form-group flex col" for="codeBlockStyle">
           <select name="codeBlockStyle" id="codeBlockStyle">
             <option value="indented">indented</option>
             <option value="fenced">fenced</option>
           </select>
-        </div>
-        <div class="form-group">
-          <label for="fence">Fence</label>
+        </label>
+        <label class="form-group flex col" for="fence">
           <select name="fence" id="fence">
             <option value="```">```</option>
             <option value="~~~">~~~</option>
           </select>
-        </div>
-        <div class="form-group">
-          <label for="emDelimiter">Em</label>
+        </label>
+        <label class="form-group flex col" for="emDelimiter">
           <select name="emDelimiter" id="emDelimiter">
             <option value="_">_</option>
             <option value="*" selected>*</option>
           </select>
-        </div>
-        <div class="form-group">
-          <label for="strongDelimiter">Strong</label>
+        </label>
+        <label class="form-group flex col" for="strongDelimiter">
           <select name="strongDelimiter" id="strongDelimiter">
             <option value="**" selected>**</option>
             <option value="__">__</option>
           </select>
-        </div>
-        <div class="form-group">
-          <label for="linkStyle">Link style</label>
+        </label>
+        <label class="form-group flex col" for="linkStyle">
           <select name="linkStyle" id="linkStyle">
             <option value="inlined">inlined</option>
             <option value="referenced">referenced</option>
           </select>
-        </div>
-        <div class="form-group">
-          <label for="linkReferenceStyle">Link</label>
+        </label>
+        <label class="form-group flex col" for="linkReferenceStyle">
           <select name="linkReferenceStyle" id="linkReferenceStyle">
             <option value="full">full</option>
             <option value="collapsed">collapsed</option>
             <option value="shortcut">shortcut</option>
           </select>
-        </div>
+        </label>
       </form>
     </div>
-  </header>
-  <div class="container wrapper" style="--whitespace: pre">
-    <div id="html" class="flex col box parent">
-      <div contenteditable="true" id="pasteclip"></div>
-      <textarea id="htmlcode" style="white-space:var(--whitespace)"></textarea>
-      <div class="box-header flex sb">
-        <strong>HTML</strong>
-        <div class="options">
-          <label> white-space 
-            <select name="whitespace" data-function="whiteSpace">
-              <option value="pre-wrap">pre-wrap</option>
-              <option value="pre" selected>pre</option>
-            </select>
-          </label>
-          <button data-event="click" data-function="copyToClip">Copy</button>
+  </nav>
+  <main>
+    <div class="container wrapper" style="--whitespace: pre; --gap-size: 0.25rem">
+      <div id="html" class="flex col box parent">
+        <div contenteditable="true" id="pasteclip"></div>
+        <textarea id="htmlcode" style="white-space: var(--whitespace)"></textarea>
+        <div class="header flex sb wrap">
+          <strong>HTML</strong>
+          <div class="options flex row gap flex-center">
+            <label class="form-group row" for="white-space">
+              <select name="whitespace" data-function="whiteSpace">
+                <option value="pre-line">pre-line</option>
+                <option value="pre-wrap">pre-wrap</option>
+                <option value="pre" selected>pre</option>
+              </select>
+            </label>
+            <button data-event="click" data-function="copyToClip">Copy</button>
+          </div>
+        </div>
+      </div>
+      <div class="handler"></div>
+      <div id="markdown" class="flex col box parent">
+        <textarea id="markcode" style="white-space: var(--whitespace)"></textarea>
+        <div class="header flex sb wrap">
+          <strong>MARKDOWN</strong>
+          <div class="options flex row gap flex-center">
+            <label class="form-group row" for="white-space">
+              <select name="whitespace" data-function="whiteSpace">
+                <option value="pre-wrap">pre-wrap</option>
+                <option value="pre" selected>pre</option>
+              </select>
+            </label>
+            <button data-event="click" data-function="copyToClip">Copy</button>
+          </div>
         </div>
       </div>
     </div>
-    <div class="handler"></div>
-    <div id="markdown" class="flex col box parent">
-      <textarea id="markcode" style="white-space:var(--whitespace)"></textarea>
-      <div class="box-header flex sb">
-        <strong>MARKDOWN</strong>
-        <div class="options">
-          <label> white-space <select name="whitespace" data-function="whiteSpace">
-              <option value="pre-wrap">pre-wrap</option>
-              <option value="pre" selected>pre</option>
-            </select>
-          </label>
-          <button data-event="click" data-function="copyToClip">Copy</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
+  </main>
+  <footer>
+    <!-- <div class="container"></div> -->
+  </footer>
   <script src="turndown.js"></script>
   <script src="turndown-plugin-gfm.js"></script>
   <script src="main.js"></script>

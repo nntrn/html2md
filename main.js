@@ -131,23 +131,18 @@ function isMobile() {
 }
 
 function fallbackCopyTextToClipboard(text) {
-  var textArea = document.createElement("textarea")
-  textArea.value = text
-  textArea.style.top = "0"
-  textArea.style.left = "0"
-  textArea.style.position = "fixed"
+  var textArea = Object.assign(document.createElement("textarea"), {
+    style: { top: 0, left: 0, position: "fixex" },
+    value: text
+  })
   document.body.appendChild(textArea)
   textArea.focus()
   textArea.select()
-
   try {
-    var successful = document.execCommand("copy")
-    var msg = successful ? "successful" : "unsuccessful"
-    console.log("Fallback: Copying text command was " + msg)
+    document.execCommand("copy")
   } catch (err) {
-    console.error("Fallback: Oops, unable to copy", err)
+    console.log(err)
   }
-
   document.body.removeChild(textArea)
 }
 
@@ -157,12 +152,8 @@ function copyTextToClipboard(text) {
     return
   }
   navigator.clipboard.writeText(text).then(
-    function () {
-      console.log("Async: Copying to clipboard was successful!")
-    },
-    function (err) {
-      console.error("Async: Could not copy text: ", err)
-    }
+    () => console.log("Async: Copying to clipboard was successful!"),
+    (err) => console.error("Async: Could not copy text: ", err)
   )
 }
 
