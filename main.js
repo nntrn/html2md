@@ -3,6 +3,9 @@ const $$ = (query) => Array.from(document.querySelectorAll(query))
 const $$$ = (collection) => Array.from(collection)
 const $$_ = (element, query) => Array.from(element.querySelectorAll(query))
 
+const pasteEl = document.querySelector("#pasteclip")
+var screenType = ""
+
 function getTurndownService(options = {}) {
   const service = new TurndownService({
     headingStyle: "atx",
@@ -21,20 +24,6 @@ function getTurndownService(options = {}) {
   return service
 }
 
-function escapeHtml(s) {
-  var ENTITY_MAP = {
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;",
-    "/": "&#x2F;"
-  }
-  return ("" + s).replace(/[&<>"'/]/g, function (s) {
-    return ENTITY_MAP[s]
-  })
-}
-
 function escapeBrackets(s) {
   var ENTITY_MAP = {
     "<": "&lt;",
@@ -46,38 +35,27 @@ function escapeBrackets(s) {
 }
 
 function removeAttributes(el) {
-  const WHITELIST_ATTR = ["href", "class", "id", "src", "name", "colspan", "type"]
+  const WHITELIST_ATTR = ["href", "src", "name", "colspan", "type"]
   el.getAttributeNames()
     .filter((e) => !WHITELIST_ATTR.includes(e))
     .forEach((f) => el.removeAttribute(f))
 }
 
-const hashcode = (str) =>
-  str.split("").reduce(function (a, b) {
-    a = (a << 5) - a + b.charCodeAt(0)
-    return a & a
-  }, 0)
-
 const isPasteEvent = (event) => (event.ctrlKey || event.metaKey) && String.fromCharCode(event.which).toLowerCase() === "v"
 
-const move = (newEl, el) => newEl.appendChild(el)
-
-function cleanContentEditable(_dom = $("#pasteclip")) {
-  const dom = $("#pasteclip")
-  $$_(dom, "svg").forEach((e) => e.remove())
-
-  Array.from(dom.querySelectorAll("a")).forEach((e) => {
-    e.textContent = escapeBrackets(e.textContent.trim())
+function cleanContentEditable(dom = pasteEl) {
+  Array.from(dom.querySelectorAll("*")).forEach((e) => {
+    if (e.tagName === "A") {
+      e.textContent = escapeBrackets(e.textContent.trim())
+    } else if (e.tagName === "SVG") {
+      e.remove()
+    } else if (e.innerText == "") {
+      e.remove()
+    }
+    removeAttributes(e)
   })
 
-  $$_(dom, "*").forEach((el) => removeAttributes(el))
-
   return dom.innerHTML
-    .split("\n")
-    .filter((f) => f.trim().length)
-    .join("\n")
-    .replace(/><(blockquote|pre|h1|h2|h3|h4|ul|li|table)/gi, ">\n<$1")
-    .replace(/><\/(ul|table|tr|ol|footer|section|main)>/gi, ">\n</$1>")
 }
 
 function getFormOptions() {
@@ -88,16 +66,15 @@ function getFormOptions() {
 
 function convertHtml2Markdown(_html) {
   $("#markcode").value = getTurndownService(getFormOptions()).turndown(_html)
-  // .replace(/[\u0300-\u036f]/g, "")
-  $("#pasteclip").style.zIndex = -1
+  pasteEl.style.zIndex = -1
+  pasteEl.classList.add("hide")
 }
 
 function clipboardToMarkdown() {
-  if ($("#pasteclip").textContent.trim().length) {
+  if (pasteEl.textContent.trim().length) {
     const html = cleanContentEditable()
     $("#htmlcode").value = html
     convertHtml2Markdown(html)
-    $("#pasteclip").innerHTML = ""
   }
 }
 
@@ -109,9 +86,9 @@ function checkElemFocus(query) {
 }
 
 function focusPasteElement() {
-  $("#pasteclip").innerHTML = ""
-  $("#pasteclip").style.zIndex = 1000
-  $("#pasteclip").focus()
+  pasteEl.innerHTML = ""
+  pasteEl.style.zIndex = 1000
+  pasteEl.focus()
 }
 
 function pasteEvent(event) {
@@ -122,17 +99,15 @@ function pasteEvent(event) {
 }
 
 function isMobile() {
-  try {
-    document.createEvent("TouchEvent")
+  if (window.screenType == "mobile") {
     return true
-  } catch (e) {
-    return false
+  } else {
   }
 }
 
 function fallbackCopyTextToClipboard(text) {
   var textArea = Object.assign(document.createElement("textarea"), {
-    style: { top: 0, left: 0, position: "fixex" },
+    style: { top: 0, left: 0, position: "fixed" },
     value: text
   })
   document.body.appendChild(textArea)
@@ -146,6 +121,12 @@ function fallbackCopyTextToClipboard(text) {
   document.body.removeChild(textArea)
 }
 
+function changeWrap(e) {
+  const target = document.querySelector(e.target.dataset.styleTarget)
+  // target.style.whiteSpace = e.target.value
+  target.style.setProperty("--white-space", e.target.value)
+}
+
 function copyTextToClipboard(text) {
   if (!navigator.clipboard) {
     fallbackCopyTextToClipboard(text)
@@ -157,13 +138,14 @@ function copyTextToClipboard(text) {
   )
 }
 
-const utils = {}
-utils.whiteSpace = function (el, v) {
-  el.closest(".parent").style.setProperty("--whitespace", v)
+function formatWhiteSpace(e) {
+  e.closest(".parent").style.setProperty("--whitespace", e.value)
 }
-utils.copyToClip = function (el) {
-  copyTextToClipboard(el.closest(".parent").querySelector("textarea").value)
+
+function copyToClip(id) {
+  copyTextToClipboard(document.querySelector(id).value)
 }
+
 
 function turndownHtml() {
   convertHtml2Markdown($("#htmlcode").value)
@@ -177,17 +159,7 @@ window.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("paste", pasteEvent, false)
 
   $("#htmlcode").addEventListener("blur", function () {
-    const hash = "" + hashcode($("#htmlcode").value)
-    if ($("#markcode").dataset.hc !== hash) {
-      $("#markcode").dataset.hc = hash
-      convertHtml2Markdown($("#htmlcode").value)
-    }
+    convertHtml2Markdown($("#htmlcode").value)
   })
 
-  $$("[data-function]").forEach((el) => {
-    const eventtype = el.dataset.event || "input"
-    el.addEventListener(eventtype, function () {
-      utils[el.dataset.function](el, el.value || "")
-    })
-  })
 })

@@ -36,83 +36,36 @@
   </header>
   <nav>
     <div class="container">
-      <form class="flex-grow wrap" id="options" onchange="turndownHtml()">
-        <label class="form-group flex col" for="headingStyle">
-          <select name="headingStyle" id="headingStyle">
-            <option value="setext">setext</option>
-            <option value="atx" selected>atx</option>
-          </select>
-        </label>
-        <label class="form-group flex col" for="hr">
-          <select name="hr" id="hr">
-            <option value="* * *">***</option>
-            <option value="---" selected>---</option>
-            <option value="___">___</option>
-          </select>
-        </label>
-        <label class="form-group flex col" for="bulletListMarker">
-          <select name="bulletListMarker" id="bulletListMarker">
-            <option value="*">*</option>
-            <option value="-">-</option>
-            <option value="+">+</option>
-          </select>
-        </label>
-        <label class="form-group flex col" for="codeBlockStyle">
-          <select name="codeBlockStyle" id="codeBlockStyle">
-            <option value="indented">indented</option>
-            <option value="fenced">fenced</option>
-          </select>
-        </label>
-        <label class="form-group flex col" for="fence">
-          <select name="fence" id="fence">
-            <option value="```">```</option>
-            <option value="~~~">~~~</option>
-          </select>
-        </label>
-        <label class="form-group flex col" for="emDelimiter">
-          <select name="emDelimiter" id="emDelimiter">
-            <option value="_">_</option>
-            <option value="*" selected>*</option>
-          </select>
-        </label>
-        <label class="form-group flex col" for="strongDelimiter">
-          <select name="strongDelimiter" id="strongDelimiter">
-            <option value="**" selected>**</option>
-            <option value="__">__</option>
-          </select>
-        </label>
-        <label class="form-group flex col" for="linkStyle">
-          <select name="linkStyle" id="linkStyle">
-            <option value="inlined">inlined</option>
-            <option value="referenced">referenced</option>
-          </select>
-        </label>
-        <label class="form-group flex col" for="linkReferenceStyle">
-          <select name="linkReferenceStyle" id="linkReferenceStyle">
-            <option value="full">full</option>
-            <option value="collapsed">collapsed</option>
-            <option value="shortcut">shortcut</option>
-          </select>
-        </label>
-      </form>
+        <form class="row" id="options" onchange="turndownHtml()"> 
+          <label name="heading"><select name="headingStyle" id="headingStyle"><option value="setext">setext</option><option value="atx" selected>atx</option></select> 
+          </label>
+          <label name="hr"><select name="hr" id="hr"><option value="* * *">***</option><option value="---" selected>---</option><option value="___">___</option></select></label>
+          <label name="bullet"><select name="bulletListMarker" id="bulletListMarker"><option value="*">*</option><option value="-">-</option><option value="+">+</option></select></label>
+          <label name="code block"><select name="codeBlockStyle" id="codeBlockStyle"><option value="indented">indented</option><option value="fenced" selected>fenced</option></select></label>
+          <label name="fence"><select name="fence" id="fence"><option value="```">```</option><option value="~~~">~~~</option></select></label>
+          <label name="em"><select name="emDelimiter" id="emDelimiter"><option value="_">_</option><option value="*" selected>*</option></select></label>
+          <label name="strong"><select name="strongDelimiter" id="strongDelimiter"><option value="**" selected>**</option><option value="__">__</option></select></label>
+          <label name="link"><select name="linkStyle" id="linkStyle"><option value="inlined">inlined</option><option value="referenced">referenced</option></select></label>
+          <label name="reference"><select name="linkReferenceStyle" id="linkReferenceStyle"><option value="full">full</option><option value="collapsed">collapsed</option><option value="shortcut">shortcut</option></select></label> 
+        </form>
     </div>
   </nav>
   <main>
-    <div class="container wrapper" style="--whitespace: pre; --gap-size: 0.25rem">
+    <div class="container wrapper" style="--whitespace:pre-wrap;--gap-size:0.25rem">
       <div id="html" class="flex col box parent">
         <div contenteditable="true" id="pasteclip"></div>
         <textarea id="htmlcode" style="white-space: var(--whitespace)"></textarea>
         <div class="header flex sb wrap">
-          <strong>HTML</strong>
-          <div class="options flex row gap flex-center">
+          <div><strong>HTML</strong></div>
+          <div class="options">
             <label class="form-group row" for="white-space">
-              <select name="whitespace" data-function="whiteSpace">
+              <select name="whitespace" onchange="formatWhiteSpace(this)">
                 <option value="pre-line">pre-line</option>
-                <option value="pre-wrap">pre-wrap</option>
-                <option value="pre" selected>pre</option>
+                <option value="pre-wrap" selected>pre-wrap</option>
+                <option value="pre">pre</option>
               </select>
             </label>
-            <button data-event="click" data-function="copyToClip">Copy</button>
+            <button onclick="copyToClip('#htmlcode')">Copy</button>
           </div>
         </div>
       </div>
@@ -120,15 +73,15 @@
       <div id="markdown" class="flex col box parent">
         <textarea id="markcode" style="white-space: var(--whitespace)"></textarea>
         <div class="header flex sb wrap">
-          <strong>MARKDOWN</strong>
-          <div class="options flex row gap flex-center">
+          <div><strong>MARKDOWN</strong></div>
+          <div class="options">
             <label class="form-group row" for="white-space">
-              <select name="whitespace" data-function="whiteSpace">
-                <option value="pre-wrap">pre-wrap</option>
-                <option value="pre" selected>pre</option>
+              <select name="whitespace" onchange="formatWhiteSpace(this)">
+                <option value="pre-wrap" selected>pre-wrap</option>
+                <option value="pre">pre</option>
               </select>
             </label>
-            <button data-event="click" data-function="copyToClip">Copy</button>
+            <button onclick="copyToClip('#markcode')">Copy</button>
           </div>
         </div>
       </div>
